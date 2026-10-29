@@ -7,7 +7,7 @@ if len(sys.argv) == 2:
 
     word_output = input("What was the parameter? ")
 
-    if word_output == target.lower():
+    if word_output == target.swapcase():
         print("Good job!")
     else:
         print("Nope sorry...")
