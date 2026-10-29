@@ -4,6 +4,9 @@ LOAN_DAYS = 7
 FEE_PER_DAY = 10
 MAX_ITEMS_PER_PERSON = 3
 
+# ============================================================
+# HELPER FUNCTIONS / ฟังก์ชันช่วย / အကူဖန်ရှင်များ
+# ============================================================
 
 def read_text(prompt):
     while True:
@@ -58,15 +61,51 @@ def get_times(item):
     return item["times_borrowed"]
 
 
+def normalize_category(text):
+    shortcuts = {"b": "book", "g": "gadget", "o": "other"}
+    text = text.strip().lower()
+    return shortcuts.get(text, text)
+
+# ============================================================
+# MENU ACTIONS / ฟังก์ชันของแต่ละเมนู / မီနူးလုပ်ဆောင်ချက်များ
+# ============================================================
+
 def add_item(items):
     item_id = read_text("Item ID (e.g. B010): ").upper()
     if find_item(items, item_id) is not None:
         print("This ID already exists. Item not added.")
         return
     name = read_text("Item name: ")
-    category = read_text("Category (book/gadget/other): ").lower()
+    category = normalize_category(read_text("Category (b=book, g=gadget, o=other): "))
     items.append(make_item(item_id, name, category))
     print("Item added successfully!")
+
+
+def edit_item(items):
+    item_id = read_text("Item ID to edit: ")
+    item = find_item(items, item_id)
+    if item is None:
+        print("Item not found.")
+        return
+    print("Press Enter to keep the current value.")
+
+    new_id = input(f"ID [{item['id']}]: ").strip().upper()
+    if new_id != "" and new_id != item["id"]:
+        other = find_item(items, new_id)
+        if other is not None and other is not item:
+            print("This ID already exists. Edit cancelled.")
+            return
+        item["id"] = new_id
+
+    new_name = input(f"Name [{item['name']}]: ").strip()
+    if new_name != "":
+        item["name"] = new_name
+
+    new_category = normalize_category(input(f"Category (b/g/o) [{item['category']}]: "))
+    if new_category != "":
+        item["category"] = new_category
+
+    print("Item updated successfully!")
 
 
 def view_items(items):
@@ -148,10 +187,13 @@ def show_summary(items, stats):
         print(f"  {item['name']}: {item['times_borrowed']} times")
     print(f"Total fines: {stats['total_fees']} baht from {stats['returns']} returns")
 
+# ============================================================
+# MAIN PROGRAM / โปรแกรมหลัก / ပင်မပရိုဂရမ်
+# ============================================================
 
 def show_menu():
     print("\n===== LIBRARY & GADGET LENDING =====")
-    print("1. Add Item\n2. View Items\n3. Borrow Item\n4. Return Item\n5. Search Items\n6. Summary Report\n7. Exit")
+    print("1. Add Item\n2. View Items\n3. Borrow Item\n4. Return Item\n5. Search Items\n6. Summary Report\n7. Edit Item\n8. Exit")
 
 
 def main():
@@ -178,14 +220,15 @@ def main():
         elif choice == "6":
             show_summary(items, stats)
         elif choice == "7":
+            edit_item(items)
+        elif choice == "8":
             print("Goodbye!")
             break
         else:
-            print("Invalid choice. Please enter a number from 1 to 7.")
+            print("Invalid choice. Please enter a number from 1 to 8.")
 
 
-if __name__ == "__main__":
-    try:
-        main()
-    except (KeyboardInterrupt, EOFError):
-        print("\nGoodbye!")
+try:
+    main()
+except (KeyboardInterrupt, EOFError):
+    print("\nGoodbye!")
