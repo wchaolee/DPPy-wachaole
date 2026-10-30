@@ -104,10 +104,6 @@ def add_item(items):
         break
 
     name = read_text("Item name: ")
-<<<<<<< HEAD
-    category = normalize_category(read_text("Category (b=book, g=gadget, o=other): "))
-=======
->>>>>>> 1a6ba56 (update rush)
     items.append(make_item(item_id, name, category))
     print("Item added successfully!")
 
@@ -122,12 +118,9 @@ def edit_item(items):
 
     new_id = input(f"ID [{item['id']}]: ").strip().upper()
     if new_id != "" and new_id != item["id"]:
-<<<<<<< HEAD
-=======
         if len(new_id) > 4:
             print("ID must not exceed 4 characters. Edit cancelled.")
             return
->>>>>>> 1a6ba56 (update rush)
         other = find_item(items, new_id)
         if other is not None and other is not item:
             print("This ID already exists. Edit cancelled.")
@@ -273,8 +266,4 @@ def main():
 try:
     main()
 except (KeyboardInterrupt, EOFError):
-<<<<<<< HEAD
     print("\nGoodbye!")
-=======
-    print("\nGoodbye!")
->>>>>>> 1a6ba56 (update rush)
