@@ -71,12 +71,43 @@ def normalize_category(text):
 # ============================================================
 
 def add_item(items):
-    item_id = read_text("Item ID (e.g. B010): ").upper()
-    if find_item(items, item_id) is not None:
-        print("This ID already exists. Item not added.")
-        return
+    # 1. เลือก Category ก่อน เพื่อนำตัวอักษรแรกมาเป็น Prefix ของ ID
+    while True:
+        raw_cat = read_text("Category (b=book, g=gadget, o=other): ")
+        category = normalize_category(raw_cat)
+        if category in ["book", "gadget", "other"]:
+            break
+        print("Invalid category. Please enter b, g, or o.")
+
+    prefix = category[0].upper()
+
+    # 2. บังคับ ID ให้ใช้เฉพาะตัวเลขต่อท้าย Prefix (รวมกันไม่เกิน 4 ตัวอักษร)
+    while True:
+        raw_id = read_text(f"Item ID (max 4 chars, starts with {prefix} + numbers, e.g. {prefix}03): ").strip()
+        
+        # กรองเอาเฉพาะตัวเลขจากข้อความที่พิมพ์เข้ามา
+        digits = "".join([ch for ch in raw_id if ch.isdigit()])
+        
+        # ประกอบร่าง: Prefix + ตัวเลข (ตัดให้เหลือสูงสุด 3 หลัก เพื่อให้ความยาวรวมไม่เกิน 4)
+        item_id = prefix + digits[:3]
+        
+        # ถ้าไม่มีตัวเลขพิมพ์มาเลย ให้แจ้งเตือน
+        if len(digits) == 0:
+            print("ID must contain numbers after the category prefix (e.g. 01, 123).")
+            continue
+
+        print(f"-> System auto-formatted ID to: {item_id}")
+
+        if find_item(items, item_id) is not None:
+            print("This ID already exists. Please try another.")
+            continue
+        break
+
     name = read_text("Item name: ")
+<<<<<<< HEAD
     category = normalize_category(read_text("Category (b=book, g=gadget, o=other): "))
+=======
+>>>>>>> 1a6ba56 (update rush)
     items.append(make_item(item_id, name, category))
     print("Item added successfully!")
 
@@ -91,6 +122,12 @@ def edit_item(items):
 
     new_id = input(f"ID [{item['id']}]: ").strip().upper()
     if new_id != "" and new_id != item["id"]:
+<<<<<<< HEAD
+=======
+        if len(new_id) > 4:
+            print("ID must not exceed 4 characters. Edit cancelled.")
+            return
+>>>>>>> 1a6ba56 (update rush)
         other = find_item(items, new_id)
         if other is not None and other is not item:
             print("This ID already exists. Edit cancelled.")
@@ -114,8 +151,13 @@ def view_items(items):
         return
     print(f"{'ID':<6}{'Name':<26}{'Category':<10}Status")
     for item in items:
+        # จำกัดความยาวชื่อไม่ให้เกิน 24 ตัวอักษร ถ้าเกินให้ตัดคำและเติม '...' ป้องกันไม่ให้เบียดคอลัมน์อื่น
+        display_name = item["name"]
+        if len(display_name) > 23:
+            display_name = display_name[:20] + "..."
+            
         status = "Available" if item["available"] else "Borrowed by " + item["borrower"]
-        print(f"{item['id']:<6}{item['name']:<26}{item['category']:<10}{status}")
+        print(f"{item['id']:<6}{display_name:<26}{item['category']:<10}{status}")
 
 
 def borrow_item(items):
@@ -231,4 +273,8 @@ def main():
 try:
     main()
 except (KeyboardInterrupt, EOFError):
+<<<<<<< HEAD
     print("\nGoodbye!")
+=======
+    print("\nGoodbye!")
+>>>>>>> 1a6ba56 (update rush)

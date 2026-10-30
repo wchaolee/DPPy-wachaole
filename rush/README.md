@@ -13,6 +13,7 @@ who borrowed what, who must return it, and how much late fine is owed.
 4. **Return Item** – return an item and calculate the late fine
 5. **Search Items** – search by name/category, optionally only available items
 6. **Summary Report** – totals, items per category, top-3 most borrowed, total fines
+7. **Edit Item** - Edit ID, name , catagory
 
 ## Business Rules
 - An item that is already borrowed cannot be borrowed again.
